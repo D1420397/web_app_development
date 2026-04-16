@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>搜尋結果</h2>
+        <p class="text-muted">為您找到以下符合食材組合的食譜：</p>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('recipe.search') }}" class="btn btn-outline-secondary">重新搜尋</a>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for res in results %}
+    <div class="col">
+        <div class="card h-100 position-relative">
+            <span class="position-absolute top-0 end-0 m-2 badge rounded-pill bg-success">
+                匹配食材：{{ res.match_count }}
+            </span>
+            {% if res.recipe.image_path %}
+                <img src="{{ res.recipe.image_path }}" class="card-img-top" alt="{{ res.recipe.title }}">
+            {% else %}
+                <div class="bg-light text-center py-5">
+                    <span class="display-4">🍴</span>
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ res.recipe.title }}</h5>
+                <p class="card-text text-muted small">{{ res.recipe.description }}</p>
+                <div class="d-grid mt-3">
+                    <a href="{{ url_for('recipe.detail', id=res.recipe.id) }}" class="btn btn-sm btn-primary">查看作法</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <h4>找不到完全符合的食譜 🤔</h4>
+        <p class="text-muted">試試看勾選更多食材，或者分享您的私房食譜！</p>
+        <a href="{{ url_for('recipe.create') }}" class="btn btn-danger mt-3">發佈食譜</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

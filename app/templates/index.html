@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">今天想煮點什麼？</h1>
+        <p class="lead text-muted mb-4">
+            家裡剩什麼，就煮什麼！透過勾選食材，幫您找到最適合的私房食譜。
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a href="{{ url_for('recipe.search') }}" class="btn btn-primary btn-lg px-4 me-md-2">開始搜尋</a>
+            <a href="{{ url_for('recipe.create') }}" class="btn btn-outline-secondary btn-lg px-4">分享美味</a>
+        </div>
+    </div>
+    <div class="col-lg-6 d-none d-lg-block">
+        <img src="https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=800&q=80" class="img-fluid rounded-3 shadow" alt="Food">
+    </div>
+</div>
+
+<h2 class="mb-4">精選推薦</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for recipe in recipes %}
+    <div class="col">
+        <div class="card h-100">
+            {% if recipe.image_path %}
+                <img src="{{ recipe.image_path }}" class="card-img-top" alt="{{ recipe.title }}">
+            {% else %}
+                <div class="bg-light text-center py-5">
+                    <span class="display-1">🍲</span>
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ recipe.title }}</h5>
+                <p class="card-text text-truncate">{{ recipe.description or '這道菜還沒有詳細描述...' }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">by {{ recipe.author.username }}</small>
+                    <a href="{{ url_for('recipe.detail', id=recipe.id) }}" class="btn btn-sm btn-outline-danger">查看詳情</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <p class="text-muted">目前還沒有食譜喔，快來成為第一個分享的人吧！</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

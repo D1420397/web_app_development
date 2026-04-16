@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} - 食譜收藏夾{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('recipe.index') }}">首頁</a></li>
+    <li class="breadcrumb-item active">{{ recipe.title }}</li>
+  </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card p-4 mb-4">
+            <h1 class="mb-2">{{ recipe.title }}</h1>
+            <div class="mb-3">
+                <span class="badge bg-danger">{{ recipe.category.name if recipe.category else '未分類' }}</span>
+                <span class="text-muted ms-2">🕒 {{ recipe.created_at.strftime('%Y-%m-%d') }}</span>
+                <span class="text-muted ms-2">👤 {{ recipe.author.username }}</span>
+            </div>
+            
+            <p class="lead mb-4">{{ recipe.description }}</p>
+
+            <h3 class="border-bottom pb-2">所需食材</h3>
+            <ul class="list-group list-group-flush mb-4">
+                {% for ing in recipe.ingredients %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ ing.name }}
+                    <span class="text-muted small">適量</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3 class="border-bottom pb-2">烹飪步驟</h3>
+            <div class="white-space-pre p-3 bg-light rounded" style="white-space: pre-wrap;">
+                {{ recipe.instructions }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        {% if recipe.image_path %}
+            <img src="{{ recipe.image_path }}" class="img-fluid rounded shadow mb-4" alt="{{ recipe.title }}">
+        {% endif %}
+        
+        {% if current_user.is_authenticated and current_user.id == recipe.author_id %}
+            <div class="d-grid gap-2 mb-4">
+                <a href="{{ url_for('recipe.edit', id=recipe.id) }}" class="btn btn-outline-primary">編輯食譜</a>
+                <form action="{{ url_for('recipe.delete', id=recipe.id) }}" method="POST">
+                    <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('確定要刪除嗎？')">刪除食譜</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
