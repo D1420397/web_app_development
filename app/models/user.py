@@ -14,8 +14,9 @@ class User(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    # 關聯 (定義在 Recipe 模型中會更清晰，但這裡保留 backref)
-    # recipes = db.relationship('Recipe', backref='author', lazy=True)
+    # 關聯
+    # recipes 由 Recipe 模型的 backref 定義
+    favorites = db.relationship('Recipe', secondary='favorites', backref=db.backref('favorited_by', lazy='dynamic'))
 
     def __repr__(self):
         return f'<User {self.username}>'
